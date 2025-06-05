@@ -1,0 +1,80 @@
+<head>
+    <meta charset="UTF-8" />
+    <title>Add React in One Minute</title>
+</head>
+
+<body>
+    <!-- Based on SO answer: https://stackoverflow.com/a/72151706/1997873 -->
+
+    <!-- We will put our React component inside this div. -->
+    <script> console.time("Load all react scripts...")</script>
+    <div id="root">Loading...</div>
+
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+
+
+    <script src="https://unpkg.com/dayjs@1.11.13/dayjs.min.js"></script>
+    <script src="https://unpkg.com/antd@5.25.4/dist/antd.js"></script> <!-- add .min -->
+    <link rel="stylesheet" href="https://unpkg.com/antd@5.25.4/dist/reset.css">
+
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+        const getFileName = (url) => {
+            let arr = url.split('/')
+            let name = arr[arr.length - 1].split('.')[0]
+            return name;
+        }
+        async function loadAll() {
+
+            const scripts = [
+                // Order from 0 import to max import
+                "./src/Like2.tsx",
+                "./src/CreateTimer.tsx",
+                "./App.tsx"
+            ];
+            for (const url of scripts) {
+                console.log("Processing url=", url);
+                const input = await ((await fetch(url)).text());
+                const output = Babel.transform(input, {
+                    // https://babeljs.io/docs/options
+                    moduleId: getFileName(url),
+                    filenameRelative: url,
+                    presets: ["react"], plugins: [
+                        "transform-es2015-modules-umd"
+                    ], sourceType: "module"
+                });
+                //console.log({ url, output })
+                const s = document.createElement("script");
+                s.textContent = output.code;
+                document.body.appendChild(s);
+            }
+
+        }
+
+
+        loadAll().then(() => console.timeEnd("Load all react scripts..."))
+            .catch(e => console.error("Error loading all", e))
+    </script>
+
+    <link rel="stylesheet" href="./App.css">
+
+    <!--  
+    Other way is to do:
+    data-type=module
+    data-presets=react,...
+    See: https://babeljs.io/docs/babel-standalone
+
+    <script data-plugins="transform-es2015-modules-umd" type="text/babel" src="./Like2.tsx"></script>
+    <script data-plugins="transform-es2015-modules-umd" type="text/babel" src="./App.tsx"></script>
+     -->
+
+
+
+</body>
+
+</html>

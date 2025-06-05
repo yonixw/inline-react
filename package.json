@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "antd": "5.25.4",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "dayjs": "1.11.13"
+  },
+  "dependencies": {}
+}
